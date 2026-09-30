@@ -1,0 +1,13 @@
+{
+  "id": "custom_wheel",
+  "name": "BalanceBot Wheel",
+  "category": "Mechanics",
+  "voltage": "—",
+  "width": 150,
+  "height": 110,
+  "pins": [
+    ["AXLE", "mechanical", "PASSIVE"],
+    ["ENC_A", "digital_io", "OUTPUT"],
+    ["ENC_B", "digital_io", "OUTPUT"]
+  ]
+}

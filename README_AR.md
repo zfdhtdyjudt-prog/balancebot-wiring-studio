@@ -7,7 +7,7 @@
 ## ما تم تحديثه في الإصدار 3.0
 
 - مكتبة موسعة في `components.json` تشمل Arduino Uno، ESP32 30-pin، L298N، MPU6050، HC-SR04، Potentiometer 10K، Passive Buzzer، LEDs، مقاومات، Voltage Divider، 1N4007، Capacitor، بطارية 3S، المفاتيح، TT Motors، العجلات، الهيكل، Breadboard، USB، PS1 وLaptop Bridge.
-- كل مكوّن يضم أسماء الـPin الفعلية ووظيفة الطرف واتجاهه وجهده/حدوده.
+- كل مكوّن يضم أسماء الـPin الفعلية، بما فيها تسميات Uno المطبوعة `~3`, `~5`, `~6`, `~9`, `~10`, `~11` و`RX←0`/`TX→1` ووظيفة الطرف واتجاهه وجهده/حدوده.
 - ثلاث واجهات تشغيل: **Arduino Only**، **Hybrid Arduino + ESP32**، **ESP32 Standalone**.
 - تحديث منظومة الطاقة: `9.6V cutoff / 11.1V nominal / 12.6V full charge`.
 - مسار الطاقة الموثق: 3S battery → Main Power Switch → `L298N VMS/12V`، وخرج `L298N 5V` المنظم إلى منطق اللوحات وفق القيود المذكورة في دليل التوصيل.

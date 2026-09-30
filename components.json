@@ -57,72 +57,72 @@
         "I2C"
       ],
       [
-        "D0/RX",
+        "RX←0",
         "serial_rx",
         "INPUT"
       ],
       [
-        "D1/TX",
+        "TX→1",
         "serial_tx",
         "OUTPUT"
       ],
       [
-        "D2",
+        "2",
         "digital_io",
         "INPUT"
       ],
       [
-        "D3",
+        "~3",
         "pwm",
         "OUTPUT"
       ],
       [
-        "D4",
+        "4",
         "digital_io",
         "OUTPUT"
       ],
       [
-        "D5",
+        "~5",
         "pwm",
         "OUTPUT"
       ],
       [
-        "D6",
+        "~6",
         "pwm",
         "OUTPUT"
       ],
       [
-        "D7",
+        "7",
         "digital_io",
         "OUTPUT"
       ],
       [
-        "D8",
+        "8",
         "digital_io",
         "OUTPUT"
       ],
       [
-        "D9",
+        "~9",
         "pwm",
         "OUTPUT"
       ],
       [
-        "D10",
+        "~10",
         "pwm",
         "OUTPUT"
       ],
       [
-        "D11",
+        "~11",
         "pwm",
         "OUTPUT"
       ],
       [
-        "D12",
+        "12",
         "digital_io",
         "INPUT"
       ],
       [
-        "D13",
+        "13",
         "digital_io",
         "OUTPUT"
       ]
@@ -838,6 +838,30 @@
       [
         "BLUETOOTH",
         "wireless",
+        "OUTPUT"
+      ]
+    ]
+  },
+  "ir_receiver": {
+    "name": "IR Receiver Module",
+    "category": "Sensors",
+    "voltage": "3.3–5V",
+    "width": 155,
+    "height": 90,
+    "pins": [
+      [
+        "VCC",
+        "power_in",
+        "POWER"
+      ],
+      [
+        "GND",
+        "ground",
+        "GND"
+      ],
+      [
+        "OUT/S",
+        "digital_out",
         "OUTPUT"
       ]
     ]

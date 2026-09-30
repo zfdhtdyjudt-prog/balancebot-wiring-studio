@@ -22,6 +22,13 @@
 
 يجب أن يكون Jumper منظم 5V في L298N في الوضع الصحيح، ثم يستخدم خرج `l298n.5V` لتغذية منطق Arduino عبر `5V` أو ESP32 عبر `VIN` فقط. **لا توصل 12.6V مباشرة إلى ESP32 أو MPU6050، ولا توصل 5V إلى ESP32 `3V3`.** تحقق من نسخة L298N الفعلية وتيار منظمها قبل تغذية لوحتين وحساسات؛ قد يلزم منظم 5V خارجي إذا ارتفعت الحرارة أو لم يكف التيار.
 
+## تسميات Arduino Uno المطبوعة
+
+- الرقمية: `2`, `4`, `7`, `8`, `12`, `13`
+- PWM: `~3`, `~5`, `~6`, `~9`, `~10`, `~11`
+- Serial: `RX←0` و`TX→1`
+- التناظرية: `A0`, `A1`, `A2`, `A3`, `A4/SDA`, `A5/SCL`
+
 ## الوضع 1 — Arduino Only
 
 - `Arduino A4 → MPU6050 SDA`
@@ -31,21 +38,21 @@
 - `Arduino A0 → HC-SR04 TRIG`
 - `Arduino A1 ← HC-SR04 ECHO` (5V logic مناسب للأردوينو)
 - `Arduino A2 ← Potentiometer SIG/WIPER`
-- `Arduino D3 → Passive Buzzer SIG/PWM`
-- `Arduino D5 → L298N ENA`
-- `Arduino D6/D7 → L298N IN1/IN2`
-- `Arduino D9/D10 → L298N IN3/IN4`
+- `Arduino ~3 → Passive Buzzer SIG/PWM`
+- `Arduino ~5 → L298N ENA`
+- `Arduino ~6/7 → L298N IN1/IN2`
+- `Arduino ~9/~10 → L298N IN3/IN4`
 - `L298N OUT1/OUT2 → left TT Motor M+/M-`
 - `L298N OUT3/OUT4 → right TT Motor M+/M-`
 
-سلك `MPU6050 INT` **غير موجود عمدًا**؛ لا تضفه إلى D2.
+سلك `MPU6050 INT` **غير موجود عمدًا**؛ لا تضفه إلى 2.
 
 ## الوضع 2 — Hybrid Arduino + ESP32
 
 - مفتاح `mode_switch.COM` يأخذ خرج 5V المنظم.
 - `mode_switch.NO/ON → ESP32 VIN` لتفعيل وضع الجسر اللاسلكي.
-- `ESP32 GPIO17/TX2 → Arduino D0/RX`.
-- `Arduino D1/TX → ESP32 GPIO16/RX2`.
+- `ESP32 GPIO17/TX2 → Arduino RX←0`.
+- `Arduino TX→1 → ESP32 GPIO16/RX2`.
 - استخدم أرضيًا مشتركًا بين اللوحتين.
 - Arduino يبقى مالك المحركات وMPU6050 والبازر في هذا الوضع.
 - ESP32 تستقبل من Wi‑Fi/Bluetooth وتنقل أوامر التحكم عبر TX/RX.

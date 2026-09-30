@@ -1,25 +1,283 @@
 {
-  "project":{"name":"BalanceBot ESP32","version":"2.0"},
-  "components":[
-    {"id":"esp_1","type":"esp32_devkit","position":{"x":110,"y":190},"rotation":0},
-    {"id":"mpu_1","type":"mpu6050","position":{"x":425,"y":95},"rotation":0},
-    {"id":"driver_1","type":"l298n","position":{"x":405,"y":350},"rotation":0},
-    {"id":"sonar_1","type":"hc_sr04","position":{"x":710,"y":105},"rotation":0},
-    {"id":"level_1","type":"voltage_divider","position":{"x":680,"y":275},"rotation":0},
-    {"id":"motor_l","type":"dc_motor","position":{"x":90,"y":530},"rotation":0},
-    {"id":"motor_r","type":"dc_motor","position":{"x":715,"y":530},"rotation":0},
-    {"id":"battery_1","type":"battery_switch","position":{"x":530,"y":565},"rotation":0}
+  "project": {
+    "name": "BalanceBot ESP32 Standalone",
+    "version": "3.0",
+    "mode": "esp32_standalone"
+  },
+  "components": [
+    {
+      "id": "esp_1",
+      "type": "esp32_devkit",
+      "position": {
+        "x": 260,
+        "y": 170
+      },
+      "rotation": 0,
+      "label": "ESP32 Dev Board 30-pin"
+    },
+    {
+      "id": "driver_1",
+      "type": "l298n",
+      "position": {
+        "x": 590,
+        "y": 390
+      },
+      "rotation": 0,
+      "label": "L298N Dual H-Bridge Motor Driver"
+    },
+    {
+      "id": "mpu_1",
+      "type": "mpu6050",
+      "position": {
+        "x": 530,
+        "y": 80
+      },
+      "rotation": 0,
+      "label": "MPU6050 6-DOF Module"
+    },
+    {
+      "id": "sonar_1",
+      "type": "hc_sr04",
+      "position": {
+        "x": 800,
+        "y": 80
+      },
+      "rotation": 0,
+      "label": "HC-SR04 Ultrasonic Sensor"
+    },
+    {
+      "id": "level_1",
+      "type": "voltage_divider",
+      "position": {
+        "x": 950,
+        "y": 180
+      },
+      "rotation": 0,
+      "label": "Echo Voltage Divider 1kΩ/2kΩ"
+    },
+    {
+      "id": "pot_1",
+      "type": "potentiometer_10k",
+      "position": {
+        "x": 60,
+        "y": 100
+      },
+      "rotation": 0,
+      "label": "Rotary Potentiometer 10K"
+    },
+    {
+      "id": "buzzer_1",
+      "type": "passive_buzzer",
+      "position": {
+        "x": 60,
+        "y": 270
+      },
+      "rotation": 0,
+      "label": "Passive Buzzer"
+    },
+    {
+      "id": "battery_1",
+      "type": "battery_pack_3s",
+      "position": {
+        "x": 600,
+        "y": 80
+      },
+      "rotation": 0,
+      "label": "3S 18650 INR 18650-26EC Battery Pack"
+    },
+    {
+      "id": "power_1",
+      "type": "power_switch",
+      "position": {
+        "x": 800,
+        "y": 300
+      },
+      "rotation": 0,
+      "label": "Main Power Rocker Switch"
+    },
+    {
+      "id": "motor_l",
+      "type": "tt_motor",
+      "position": {
+        "x": 520,
+        "y": 620
+      },
+      "rotation": 0,
+      "label": "Yellow TT DC Gear Motor"
+    },
+    {
+      "id": "motor_r",
+      "type": "tt_motor",
+      "position": {
+        "x": 800,
+        "y": 620
+      },
+      "rotation": 0,
+      "label": "Yellow TT DC Gear Motor"
+    }
   ],
-  "wires":[
-    {"from":"esp_1.GPIO21","to":"mpu_1.SDA","label":"I2C SDA","signal":"i2c","color":"i2c"},
-    {"from":"esp_1.GPIO22","to":"mpu_1.SCL","label":"I2C SCL","signal":"i2c","color":"i2c"},
-    {"from":"esp_1.3V3","to":"mpu_1.VCC","label":"3V3 → VCC","signal":"power","color":"power"},
-    {"from":"esp_1.GND","to":"mpu_1.GND","label":"GND مشترك","signal":"ground","color":"ground"},
-    {"from":"esp_1.GPIO27","to":"driver_1.ENA","label":"PWM ENA","signal":"control","color":"control"},
-    {"from":"sonar_1.ECHO","to":"level_1.IN","label":"Echo 5V","signal":"warning","color":"warning"},
-    {"from":"level_1.OUT","to":"esp_1.GPIO34","label":"Echo safe 3.3V","signal":"sensor","color":"sensor"},
-    {"from":"battery_1.+","to":"driver_1.12V","label":"VMOTOR +","signal":"power","color":"power"},
-    {"from":"battery_1.-","to":"driver_1.GND","label":"GND","signal":"ground","color":"ground"}
+  "wires": [
+    {
+      "from": "battery_1.B+",
+      "to": "power_1.IN",
+      "label": "3S B+ to switch",
+      "signal": "power",
+      "color": "power"
+    },
+    {
+      "from": "power_1.OUT",
+      "to": "driver_1.VMS/12V",
+      "label": "motor rail",
+      "signal": "power",
+      "color": "power"
+    },
+    {
+      "from": "battery_1.B-",
+      "to": "driver_1.GND",
+      "label": "common ground",
+      "signal": "ground",
+      "color": "ground"
+    },
+    {
+      "from": "driver_1.5V",
+      "to": "esp_1.VIN",
+      "label": "regulated 5V to ESP32 VIN",
+      "signal": "power",
+      "color": "power"
+    },
+    {
+      "from": "esp_1.GND",
+      "to": "driver_1.GND",
+      "label": "common ground",
+      "signal": "ground",
+      "color": "ground"
+    },
+    {
+      "from": "esp_1.GPIO21/SDA",
+      "to": "mpu_1.SDA",
+      "label": "I2C SDA",
+      "signal": "i2c",
+      "color": "i2c"
+    },
+    {
+      "from": "esp_1.GPIO22/SCL",
+      "to": "mpu_1.SCL",
+      "label": "I2C SCL",
+      "signal": "i2c",
+      "color": "i2c"
+    },
+    {
+      "from": "esp_1.3V3",
+      "to": "mpu_1.VCC",
+      "label": "3.3V sensor supply",
+      "signal": "power",
+      "color": "power"
+    },
+    {
+      "from": "esp_1.GPIO5",
+      "to": "sonar_1.TRIG",
+      "label": "TRIG",
+      "signal": "sensor",
+      "color": "sensor"
+    },
+    {
+      "from": "sonar_1.ECHO",
+      "to": "level_1.IN/ECHO",
+      "label": "5V Echo into divider",
+      "signal": "warning",
+      "color": "warning"
+    },
+    {
+      "from": "level_1.OUT/ESP32",
+      "to": "esp_1.GPIO34",
+      "label": "safe 3.3V Echo",
+      "signal": "sensor",
+      "color": "sensor"
+    },
+    {
+      "from": "esp_1.GPIO32",
+      "to": "pot_1.SIG/WIPER",
+      "label": "volume analog input",
+      "signal": "sensor",
+      "color": "sensor"
+    },
+    {
+      "from": "esp_1.GPIO27",
+      "to": "buzzer_1.SIG/PWM",
+      "label": "buzzer PWM",
+      "signal": "control",
+      "color": "control"
+    },
+    {
+      "from": "esp_1.GPIO25",
+      "to": "driver_1.ENA",
+      "label": "left PWM",
+      "signal": "control",
+      "color": "control"
+    },
+    {
+      "from": "esp_1.GPIO26",
+      "to": "driver_1.IN1",
+      "label": "left direction A",
+      "signal": "control",
+      "color": "control"
+    },
+    {
+      "from": "esp_1.GPIO14",
+      "to": "driver_1.IN2",
+      "label": "left direction B",
+      "signal": "control",
+      "color": "control"
+    },
+    {
+      "from": "esp_1.GPIO18",
+      "to": "driver_1.IN3",
+      "label": "right direction A",
+      "signal": "control",
+      "color": "control"
+    },
+    {
+      "from": "esp_1.GPIO19",
+      "to": "driver_1.IN4",
+      "label": "right direction B",
+      "signal": "control",
+      "color": "control"
+    },
+    {
+      "from": "driver_1.OUT1",
+      "to": "motor_l.M+",
+      "label": "left motor +",
+      "signal": "motor",
+      "color": "motor"
+    },
+    {
+      "from": "driver_1.OUT2",
+      "to": "motor_l.M-",
+      "label": "left motor -",
+      "signal": "motor",
+      "color": "motor"
+    },
+    {
+      "from": "driver_1.OUT3",
+      "to": "motor_r.M+",
+      "label": "right motor +",
+      "signal": "motor",
+      "color": "motor"
+    },
+    {
+      "from": "driver_1.OUT4",
+      "to": "motor_r.M-",
+      "label": "right motor -",
+      "signal": "motor",
+      "color": "motor"
+    }
   ],
-  "settings":{"showPinNumbers":true,"showLabels":true,"showElectricalWarnings":true,"grid":24}
+  "settings": {
+    "showPinNumbers": true,
+    "showLabels": true,
+    "showElectricalWarnings": true,
+    "grid": 24,
+    "powerSystem": "3S_18650",
+    "sharedGround": true
+  }
 }

@@ -1,0 +1,255 @@
+{
+  "project": {
+    "name": "BalanceBot Hybrid Arduino + ESP32",
+    "version": "3.0",
+    "mode": "hybrid"
+  },
+  "components": [
+    {
+      "id": "arduino_1",
+      "type": "arduino_uno",
+      "position": {
+        "x": 130,
+        "y": 180
+      },
+      "rotation": 0,
+      "label": "Arduino Uno R3 ATmega328P"
+    },
+    {
+      "id": "esp_1",
+      "type": "esp32_devkit",
+      "position": {
+        "x": 400,
+        "y": 160
+      },
+      "rotation": 0,
+      "label": "ESP32 Dev Board 30-pin"
+    },
+    {
+      "id": "driver_1",
+      "type": "l298n",
+      "position": {
+        "x": 700,
+        "y": 390
+      },
+      "rotation": 0,
+      "label": "L298N Dual H-Bridge Motor Driver"
+    },
+    {
+      "id": "mode_1",
+      "type": "mode_switch",
+      "position": {
+        "x": 360,
+        "y": 40
+      },
+      "rotation": 0,
+      "label": "Mode Selector Toggle SPST"
+    },
+    {
+      "id": "battery_1",
+      "type": "battery_pack_3s",
+      "position": {
+        "x": 700,
+        "y": 60
+      },
+      "rotation": 0,
+      "label": "3S 18650 INR 18650-26EC Battery Pack"
+    },
+    {
+      "id": "power_1",
+      "type": "power_switch",
+      "position": {
+        "x": 900,
+        "y": 220
+      },
+      "rotation": 0,
+      "label": "Main Power Rocker Switch"
+    },
+    {
+      "id": "mpu_1",
+      "type": "mpu6050",
+      "position": {
+        "x": 430,
+        "y": 430
+      },
+      "rotation": 0,
+      "label": "MPU6050 6-DOF Module"
+    },
+    {
+      "id": "pot_1",
+      "type": "potentiometer_10k",
+      "position": {
+        "x": 80,
+        "y": 420
+      },
+      "rotation": 0,
+      "label": "Rotary Potentiometer 10K"
+    },
+    {
+      "id": "buzzer_1",
+      "type": "passive_buzzer",
+      "position": {
+        "x": 180,
+        "y": 560
+      },
+      "rotation": 0,
+      "label": "Passive Buzzer"
+    },
+    {
+      "id": "motor_l",
+      "type": "tt_motor",
+      "position": {
+        "x": 650,
+        "y": 620
+      },
+      "rotation": 0,
+      "label": "Yellow TT DC Gear Motor"
+    },
+    {
+      "id": "motor_r",
+      "type": "tt_motor",
+      "position": {
+        "x": 850,
+        "y": 620
+      },
+      "rotation": 0,
+      "label": "Yellow TT DC Gear Motor"
+    }
+  ],
+  "wires": [
+    {
+      "from": "battery_1.B+",
+      "to": "power_1.IN",
+      "label": "battery to main switch",
+      "signal": "power",
+      "color": "power"
+    },
+    {
+      "from": "power_1.OUT",
+      "to": "driver_1.VMS/12V",
+      "label": "motor rail",
+      "signal": "power",
+      "color": "power"
+    },
+    {
+      "from": "battery_1.B-",
+      "to": "driver_1.GND",
+      "label": "common ground",
+      "signal": "ground",
+      "color": "ground"
+    },
+    {
+      "from": "driver_1.5V",
+      "to": "arduino_1.5V",
+      "label": "regulated 5V",
+      "signal": "power",
+      "color": "power"
+    },
+    {
+      "from": "driver_1.5V",
+      "to": "esp_1.VIN",
+      "label": "5V to ESP32 VIN through mode switch",
+      "signal": "power",
+      "color": "power"
+    },
+    {
+      "from": "mode_1.COM",
+      "to": "driver_1.5V",
+      "label": "mode supply common",
+      "signal": "control",
+      "color": "control"
+    },
+    {
+      "from": "mode_1.NO/ON",
+      "to": "esp_1.VIN",
+      "label": "hybrid mode ON",
+      "signal": "control",
+      "color": "control"
+    },
+    {
+      "from": "esp_1.GPIO17/TX2",
+      "to": "arduino_1.D0/RX",
+      "label": "ESP32 TX to Arduino RX",
+      "signal": "serial",
+      "color": "serial"
+    },
+    {
+      "from": "arduino_1.D1/TX",
+      "to": "esp_1.GPIO16/RX2",
+      "label": "Arduino TX to ESP32 RX",
+      "signal": "serial",
+      "color": "serial"
+    },
+    {
+      "from": "arduino_1.A4",
+      "to": "mpu_1.SDA",
+      "label": "I2C SDA owned by Arduino",
+      "signal": "i2c",
+      "color": "i2c"
+    },
+    {
+      "from": "arduino_1.A5",
+      "to": "mpu_1.SCL",
+      "label": "I2C SCL owned by Arduino",
+      "signal": "i2c",
+      "color": "i2c"
+    },
+    {
+      "from": "arduino_1.A2",
+      "to": "pot_1.SIG/WIPER",
+      "label": "buzzer volume input",
+      "signal": "sensor",
+      "color": "sensor"
+    },
+    {
+      "from": "arduino_1.D3",
+      "to": "buzzer_1.SIG/PWM",
+      "label": "buzzer PWM",
+      "signal": "control",
+      "color": "control"
+    },
+    {
+      "from": "buzzer_1.GND",
+      "to": "arduino_1.GND",
+      "label": "buzzer ground",
+      "signal": "ground",
+      "color": "ground"
+    },
+    {
+      "from": "driver_1.OUT1",
+      "to": "motor_l.M+",
+      "label": "left motor",
+      "signal": "motor",
+      "color": "motor"
+    },
+    {
+      "from": "driver_1.OUT2",
+      "to": "motor_l.M-",
+      "label": "left motor return",
+      "signal": "motor",
+      "color": "motor"
+    },
+    {
+      "from": "driver_1.OUT3",
+      "to": "motor_r.M+",
+      "label": "right motor",
+      "signal": "motor",
+      "color": "motor"
+    },
+    {
+      "from": "driver_1.OUT4",
+      "to": "motor_r.M-",
+      "label": "right motor return",
+      "signal": "motor",
+      "color": "motor"
+    }
+  ],
+  "settings": {
+    "showPinNumbers": true,
+    "showLabels": true,
+    "showElectricalWarnings": true,
+    "grid": 24,
+    "powerSystem": "3S_18650",
+    "sharedGround": true
+  }
+}

@@ -1,12 +1,845 @@
 {
-  "arduino_uno": {"name":"Arduino Uno R3","category":"Controllers","voltage":"5V","width":190,"height":300,"pins":[["VIN","power_in","POWER"],["5V","power_out","POWER"],["3V3","power_out","POWER"],["GND","ground","GND"],["A0","analog_io","INPUT"],["A1","analog_io","INPUT"],["A4","sda","I2C"],["A5","scl","I2C"],["D2","digital_io","INPUT"],["D3","digital_io","INPUT"],["D4","digital_io","OUTPUT"],["D5","pwm","OUTPUT"],["D6","pwm","OUTPUT"],["D7","digital_io","OUTPUT"],["D8","digital_io","OUTPUT"],["D9","pwm","OUTPUT"],["D10","pwm","OUTPUT"],["D11","digital_io","OUTPUT"],["D12","digital_io","OUTPUT"],["D13","digital_io","OUTPUT"]]},
-  "esp32_devkit": {"name":"ESP32 DevKit V1","category":"Controllers","voltage":"3.3V","width":190,"height":330,"pins":[["3V3","power_out","POWER"],["VIN","power_in","POWER"],["GND","ground","GND"],["GPIO2","digital_io","OUTPUT"],["GPIO4","digital_io","OUTPUT"],["GPIO5","digital_io","OUTPUT"],["GPIO14","pwm","OUTPUT"],["GPIO16","digital_io","OUTPUT"],["GPIO17","digital_io","OUTPUT"],["GPIO21","sda","I2C"],["GPIO22","scl","I2C"],["GPIO23","digital_io","OUTPUT"],["GPIO25","digital_io","OUTPUT"],["GPIO26","digital_io","OUTPUT"],["GPIO27","pwm","OUTPUT"],["GPIO32","digital_io","OUTPUT"],["GPIO33","digital_io","OUTPUT"],["GPIO34","input_only","INPUT"],["GPIO35","input_only","INPUT"],["GPIO39","input_only","INPUT"]]},
-  "mpu6050": {"name":"MPU6050 Module","category":"Sensors","voltage":"3.3–5V","width":150,"height":100,"pins":[["VCC","power_in","POWER"],["GND","ground","GND"],["SDA","sda","I2C"],["SCL","scl","I2C"],["INT","digital_io","OUTPUT"]]},
-  "hc_sr04": {"name":"HC-SR04","category":"Sensors","voltage":"5V","width":170,"height":100,"pins":[["VCC","power_in","POWER"],["TRIG","digital_io","INPUT"],["ECHO","digital_io","OUTPUT"],["GND","ground","GND"]]},
-  "l298n": {"name":"L298N Dual H-Bridge","category":"Drivers","voltage":"5–35V motor","width":220,"height":150,"pins":[["12V","power_in","POWER"],["GND","ground","GND"],["5V","power_in","POWER"],["ENA","pwm","INPUT"],["IN1","digital_io","INPUT"],["IN2","digital_io","INPUT"],["IN3","digital_io","INPUT"],["IN4","digital_io","INPUT"],["ENB","pwm","INPUT"],["OUT1","motor_out","OUTPUT"],["OUT2","motor_out","OUTPUT"],["OUT3","motor_out","OUTPUT"],["OUT4","motor_out","OUTPUT"]]},
-  "dc_motor": {"name":"DC Motor","category":"Actuators","voltage":"6–12V","width":130,"height":90,"pins":[["M+","motor_in","INPUT"],["M-","motor_in","INPUT"]]},
-  "led": {"name":"LED + 220Ω","category":"Indicators","voltage":"5V","width":120,"height":75,"pins":[["A","digital_io","INPUT"],["K","ground","GND"]]},
-  "resistor": {"name":"Resistor","category":"Passives","voltage":"—","width":120,"height":70,"pins":[["1","passive","PASSIVE"],["2","passive","PASSIVE"]]},
-  "voltage_divider": {"name":"Voltage Divider 5V→3.3V","category":"Power","voltage":"5V input","width":160,"height":85,"pins":[["IN","power_in","POWER"],["OUT","analog_io","OUTPUT"],["GND","ground","GND"]]},
-  "battery_switch": {"name":"Battery + Switch","category":"Power","voltage":"7.4–12V","width":170,"height":95,"pins":[["+","power_out","POWER"],["-","ground","GND"]]}
+  "arduino_uno": {
+    "name": "Arduino Uno R3 ATmega328P",
+    "category": "Controllers",
+    "voltage": "5V logic",
+    "width": 190,
+    "height": 330,
+    "pins": [
+      [
+        "VIN",
+        "power_in",
+        "POWER"
+      ],
+      [
+        "5V",
+        "power_in",
+        "POWER"
+      ],
+      [
+        "3V3",
+        "power_out",
+        "POWER"
+      ],
+      [
+        "GND",
+        "ground",
+        "GND"
+      ],
+      [
+        "A0",
+        "analog_io",
+        "INPUT"
+      ],
+      [
+        "A1",
+        "analog_io",
+        "INPUT"
+      ],
+      [
+        "A2",
+        "analog_io",
+        "INPUT"
+      ],
+      [
+        "A3",
+        "analog_io",
+        "INPUT"
+      ],
+      [
+        "A4",
+        "sda",
+        "I2C"
+      ],
+      [
+        "A5",
+        "scl",
+        "I2C"
+      ],
+      [
+        "D0/RX",
+        "serial_rx",
+        "INPUT"
+      ],
+      [
+        "D1/TX",
+        "serial_tx",
+        "OUTPUT"
+      ],
+      [
+        "D2",
+        "digital_io",
+        "INPUT"
+      ],
+      [
+        "D3",
+        "pwm",
+        "OUTPUT"
+      ],
+      [
+        "D4",
+        "digital_io",
+        "OUTPUT"
+      ],
+      [
+        "D5",
+        "pwm",
+        "OUTPUT"
+      ],
+      [
+        "D6",
+        "pwm",
+        "OUTPUT"
+      ],
+      [
+        "D7",
+        "digital_io",
+        "OUTPUT"
+      ],
+      [
+        "D8",
+        "digital_io",
+        "OUTPUT"
+      ],
+      [
+        "D9",
+        "pwm",
+        "OUTPUT"
+      ],
+      [
+        "D10",
+        "pwm",
+        "OUTPUT"
+      ],
+      [
+        "D11",
+        "pwm",
+        "OUTPUT"
+      ],
+      [
+        "D12",
+        "digital_io",
+        "INPUT"
+      ],
+      [
+        "D13",
+        "digital_io",
+        "OUTPUT"
+      ]
+    ],
+    "realLabel": "Arduino Uno R3 pin names; INT intentionally unused"
+  },
+  "esp32_devkit": {
+    "name": "ESP32 Dev Board 30-pin",
+    "category": "Controllers",
+    "voltage": "3.3V logic; VIN accepts 5V",
+    "width": 200,
+    "height": 350,
+    "pins": [
+      [
+        "VIN",
+        "power_in_5v",
+        "POWER"
+      ],
+      [
+        "3V3",
+        "power_out",
+        "POWER"
+      ],
+      [
+        "GND",
+        "ground",
+        "GND"
+      ],
+      [
+        "EN",
+        "enable",
+        "INPUT"
+      ],
+      [
+        "GPIO0",
+        "boot",
+        "INPUT"
+      ],
+      [
+        "GPIO2",
+        "digital_io",
+        "OUTPUT"
+      ],
+      [
+        "GPIO4",
+        "digital_io",
+        "OUTPUT"
+      ],
+      [
+        "GPIO5",
+        "digital_io",
+        "OUTPUT"
+      ],
+      [
+        "GPIO12",
+        "digital_io",
+        "OUTPUT"
+      ],
+      [
+        "GPIO13",
+        "digital_io",
+        "OUTPUT"
+      ],
+      [
+        "GPIO14",
+        "pwm",
+        "OUTPUT"
+      ],
+      [
+        "GPIO16/RX2",
+        "serial_rx",
+        "INPUT"
+      ],
+      [
+        "GPIO17/TX2",
+        "serial_tx",
+        "OUTPUT"
+      ],
+      [
+        "GPIO18",
+        "digital_io",
+        "OUTPUT"
+      ],
+      [
+        "GPIO19",
+        "digital_io",
+        "OUTPUT"
+      ],
+      [
+        "GPIO21/SDA",
+        "sda",
+        "I2C"
+      ],
+      [
+        "GPIO22/SCL",
+        "scl",
+        "I2C"
+      ],
+      [
+        "GPIO23",
+        "digital_io",
+        "OUTPUT"
+      ],
+      [
+        "GPIO25",
+        "pwm",
+        "OUTPUT"
+      ],
+      [
+        "GPIO26",
+        "pwm",
+        "OUTPUT"
+      ],
+      [
+        "GPIO27",
+        "pwm",
+        "OUTPUT"
+      ],
+      [
+        "GPIO32",
+        "analog_io",
+        "INPUT"
+      ],
+      [
+        "GPIO33",
+        "analog_io",
+        "INPUT"
+      ],
+      [
+        "GPIO34",
+        "input_only",
+        "INPUT"
+      ],
+      [
+        "GPIO35",
+        "input_only",
+        "INPUT"
+      ]
+    ],
+    "realLabel": "ESP32 30-pin Dev Board; GPIO34/35 input only"
+  },
+  "l298n": {
+    "name": "L298N Dual H-Bridge Motor Driver",
+    "category": "Drivers",
+    "voltage": "VMS 7–35V; logic 5V",
+    "width": 230,
+    "height": 190,
+    "pins": [
+      [
+        "VMS/12V",
+        "motor_power_in",
+        "POWER"
+      ],
+      [
+        "GND",
+        "ground",
+        "GND"
+      ],
+      [
+        "5V",
+        "logic_5v",
+        "POWER"
+      ],
+      [
+        "ENA",
+        "pwm_enable",
+        "INPUT"
+      ],
+      [
+        "IN1",
+        "logic_in",
+        "INPUT"
+      ],
+      [
+        "IN2",
+        "logic_in",
+        "INPUT"
+      ],
+      [
+        "IN3",
+        "logic_in",
+        "INPUT"
+      ],
+      [
+        "IN4",
+        "logic_in",
+        "INPUT"
+      ],
+      [
+        "ENB",
+        "pwm_enable",
+        "INPUT"
+      ],
+      [
+        "OUT1",
+        "motor_out",
+        "OUTPUT"
+      ],
+      [
+        "OUT2",
+        "motor_out",
+        "OUTPUT"
+      ],
+      [
+        "OUT3",
+        "motor_out",
+        "OUTPUT"
+      ],
+      [
+        "OUT4",
+        "motor_out",
+        "OUTPUT"
+      ]
+    ],
+    "jumper": "5V regulator jumper ON: 5V pin is regulated output; do not feed 5V back into it"
+  },
+  "mpu6050": {
+    "name": "MPU6050 6-DOF Module",
+    "category": "Sensors",
+    "voltage": "3.3–5V",
+    "width": 155,
+    "height": 105,
+    "pins": [
+      [
+        "VCC",
+        "power_in",
+        "POWER"
+      ],
+      [
+        "GND",
+        "ground",
+        "GND"
+      ],
+      [
+        "SCL",
+        "scl",
+        "I2C"
+      ],
+      [
+        "SDA",
+        "sda",
+        "I2C"
+      ]
+    ],
+    "unusedPins": [
+      "INT"
+    ],
+    "realLabel": "INT deliberately omitted from wiring"
+  },
+  "hc_sr04": {
+    "name": "HC-SR04 Ultrasonic Sensor",
+    "category": "Sensors",
+    "voltage": "5V",
+    "width": 175,
+    "height": 105,
+    "pins": [
+      [
+        "VCC",
+        "power_in",
+        "POWER"
+      ],
+      [
+        "GND",
+        "ground",
+        "GND"
+      ],
+      [
+        "TRIG",
+        "trigger",
+        "INPUT"
+      ],
+      [
+        "ECHO",
+        "echo_5v",
+        "OUTPUT"
+      ]
+    ]
+  },
+  "potentiometer_10k": {
+    "name": "Rotary Potentiometer 10K",
+    "category": "Inputs",
+    "voltage": "5V analog",
+    "width": 150,
+    "height": 95,
+    "pins": [
+      [
+        "VCC",
+        "power_in",
+        "POWER"
+      ],
+      [
+        "GND",
+        "ground",
+        "GND"
+      ],
+      [
+        "SIG/WIPER",
+        "analog_out",
+        "OUTPUT"
+      ]
+    ]
+  },
+  "passive_buzzer": {
+    "name": "Passive Buzzer",
+    "category": "Outputs",
+    "voltage": "3.3–5V PWM",
+    "width": 140,
+    "height": 80,
+    "pins": [
+      [
+        "SIG/PWM",
+        "pwm_in",
+        "INPUT"
+      ],
+      [
+        "GND",
+        "ground",
+        "GND"
+      ]
+    ]
+  },
+  "led_red": {
+    "name": "Red LED",
+    "category": "Indicators",
+    "voltage": "20mA max",
+    "width": 105,
+    "height": 70,
+    "pins": [
+      [
+        "A",
+        "anode",
+        "INPUT"
+      ],
+      [
+        "K",
+        "cathode",
+        "GND"
+      ]
+    ]
+  },
+  "led_green": {
+    "name": "Green LED",
+    "category": "Indicators",
+    "voltage": "20mA max",
+    "width": 105,
+    "height": 70,
+    "pins": [
+      [
+        "A",
+        "anode",
+        "INPUT"
+      ],
+      [
+        "K",
+        "cathode",
+        "GND"
+      ]
+    ]
+  },
+  "resistor_220": {
+    "name": "LED Resistor 220–330Ω",
+    "category": "Protection",
+    "voltage": "passive",
+    "width": 120,
+    "height": 65,
+    "pins": [
+      [
+        "1",
+        "passive",
+        "PASSIVE"
+      ],
+      [
+        "2",
+        "passive",
+        "PASSIVE"
+      ]
+    ]
+  },
+  "resistor_1k": {
+    "name": "Voltage Divider R1 1kΩ",
+    "category": "Protection",
+    "voltage": "passive",
+    "width": 120,
+    "height": 65,
+    "pins": [
+      [
+        "1",
+        "passive",
+        "PASSIVE"
+      ],
+      [
+        "2",
+        "passive",
+        "PASSIVE"
+      ]
+    ]
+  },
+  "resistor_2k": {
+    "name": "Voltage Divider R2 2kΩ",
+    "category": "Protection",
+    "voltage": "passive",
+    "width": 120,
+    "height": 65,
+    "pins": [
+      [
+        "1",
+        "passive",
+        "PASSIVE"
+      ],
+      [
+        "2",
+        "passive",
+        "PASSIVE"
+      ]
+    ]
+  },
+  "voltage_divider": {
+    "name": "Echo Voltage Divider 1kΩ/2kΩ",
+    "category": "Protection",
+    "voltage": "5V → approx 3.3V",
+    "width": 170,
+    "height": 100,
+    "pins": [
+      [
+        "IN/ECHO",
+        "input_5v",
+        "POWER"
+      ],
+      [
+        "OUT/ESP32",
+        "output_3v3",
+        "OUTPUT"
+      ],
+      [
+        "GND",
+        "ground",
+        "GND"
+      ]
+    ],
+    "ratio": "2kΩ/(1kΩ+2kΩ)=0.667"
+  },
+  "diode_1n4007": {
+    "name": "1N4007 Flyback Diode",
+    "category": "Protection",
+    "voltage": "1000V diode",
+    "width": 125,
+    "height": 70,
+    "pins": [
+      [
+        "A/Anode",
+        "anode",
+        "INPUT"
+      ],
+      [
+        "K/Cathode",
+        "cathode",
+        "OUTPUT"
+      ]
+    ]
+  },
+  "capacitor_100uf": {
+    "name": "Electrolytic Capacitor 100µF/25V",
+    "category": "Protection",
+    "voltage": "25V max",
+    "width": 135,
+    "height": 75,
+    "pins": [
+      [
+        "+",
+        "positive",
+        "POWER"
+      ],
+      [
+        "-",
+        "negative",
+        "GND"
+      ]
+    ]
+  },
+  "battery_pack_3s": {
+    "name": "3S 18650 INR 18650-26EC Battery Pack",
+    "category": "Power",
+    "voltage": "9.6V cutoff · 11.1V nominal · 12.6V full",
+    "width": 185,
+    "height": 105,
+    "pins": [
+      [
+        "B+",
+        "battery_positive",
+        "POWER"
+      ],
+      [
+        "B-",
+        "battery_negative",
+        "GND"
+      ]
+    ],
+    "capacity": "3 × 3.7V · 2600mAh · 9.62Wh each"
+  },
+  "battery_holder_3slot": {
+    "name": "3-Slot 18650 Battery Holder",
+    "category": "Power",
+    "voltage": "3S series",
+    "width": 175,
+    "height": 95,
+    "pins": [
+      [
+        "B+",
+        "battery_positive",
+        "POWER"
+      ],
+      [
+        "B-",
+        "battery_negative",
+        "GND"
+      ],
+      [
+        "CELL1+",
+        "series_node",
+        "PASSIVE"
+      ],
+      [
+        "CELL2+",
+        "series_node",
+        "PASSIVE"
+      ]
+    ]
+  },
+  "power_switch": {
+    "name": "Main Power Rocker Switch",
+    "category": "Power",
+    "voltage": "battery line 12.6V max",
+    "width": 145,
+    "height": 75,
+    "pins": [
+      [
+        "IN",
+        "switch_in",
+        "INPUT"
+      ],
+      [
+        "OUT",
+        "switch_out",
+        "OUTPUT"
+      ]
+    ]
+  },
+  "mode_switch": {
+    "name": "Mode Selector Toggle SPST",
+    "category": "Controls",
+    "voltage": "5V control",
+    "width": 145,
+    "height": 75,
+    "pins": [
+      [
+        "COM",
+        "switch_common",
+        "INPUT"
+      ],
+      [
+        "NO/ON",
+        "switch_on",
+        "OUTPUT"
+      ]
+    ]
+  },
+  "tt_motor": {
+    "name": "Yellow TT DC Gear Motor",
+    "category": "Actuators",
+    "voltage": "3–6V motor",
+    "width": 135,
+    "height": 90,
+    "pins": [
+      [
+        "M+",
+        "motor_in",
+        "INPUT"
+      ],
+      [
+        "M-",
+        "motor_in",
+        "INPUT"
+      ]
+    ]
+  },
+  "caster_wheel": {
+    "name": "Nylon Caster Wheel 30mm",
+    "category": "Mechanics",
+    "voltage": "mechanical",
+    "width": 115,
+    "height": 80,
+    "pins": [
+      [
+        "MOUNT",
+        "mount",
+        "PASSIVE"
+      ]
+    ]
+  },
+  "robot_chassis": {
+    "name": "Two-Layer Robot Chassis",
+    "category": "Mechanics",
+    "voltage": "mechanical",
+    "width": 190,
+    "height": 110,
+    "pins": [
+      [
+        "FRONT_MOUNT",
+        "mount",
+        "PASSIVE"
+      ],
+      [
+        "REAR_MOUNT",
+        "mount",
+        "PASSIVE"
+      ],
+      [
+        "GROUND_MOUNT",
+        "mount",
+        "PASSIVE"
+      ]
+    ]
+  },
+  "breadboard_mb102": {
+    "name": "MB102 Solderless Breadboard",
+    "category": "Assembly",
+    "voltage": "5V/3.3V rails",
+    "width": 190,
+    "height": 100,
+    "pins": [
+      [
+        "VCC_RAIL",
+        "power_rail",
+        "POWER"
+      ],
+      [
+        "GND_RAIL",
+        "ground_rail",
+        "GND"
+      ],
+      [
+        "VCC_RAIL2",
+        "power_rail",
+        "POWER"
+      ],
+      [
+        "GND_RAIL2",
+        "ground_rail",
+        "GND"
+      ]
+    ]
+  },
+  "usb_cable": {
+    "name": "USB Programming Cable",
+    "category": "External",
+    "voltage": "data/power",
+    "width": 130,
+    "height": 65,
+    "pins": [
+      [
+        "HOST_USB",
+        "host",
+        "INPUT"
+      ],
+      [
+        "BOARD_USB",
+        "board",
+        "OUTPUT"
+      ]
+    ]
+  },
+  "ps1_controller": {
+    "name": "Wired PlayStation 1 Controller",
+    "category": "External",
+    "voltage": "5V USB/adapter",
+    "width": 170,
+    "height": 85,
+    "pins": [
+      [
+        "DATA",
+        "controller_data",
+        "OUTPUT"
+      ],
+      [
+        "VCC",
+        "power_in",
+        "POWER"
+      ],
+      [
+        "GND",
+        "ground",
+        "GND"
+      ]
+    ]
+  },
+  "laptop_bridge": {
+    "name": "Laptop + x360ce + Python Bridge",
+    "category": "External",
+    "voltage": "host computer",
+    "width": 190,
+    "height": 90,
+    "pins": [
+      [
+        "SERIAL_USB",
+        "serial",
+        "OUTPUT"
+      ],
+      [
+        "WIFI",
+        "wireless",
+        "OUTPUT"
+      ],
+      [
+        "BLUETOOTH",
+        "wireless",
+        "OUTPUT"
+      ]
+    ]
+  }
 }

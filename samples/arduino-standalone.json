@@ -1,19 +1,23 @@
 {
-  "mode": "arduino",
-  "title": "Arduino Standalone",
-  "components": [
-    {"id":"arduino","type":"controller","label":"ARDUINO UNO R3","x":60,"y":190,"w":230,"h":300,"fill":"#e8f2ff"},
-    {"id":"mpu","type":"sensor","label":"MPU6050","sub":"I2C · VCC · GND · SDA · SCL","x":380,"y":90,"w":230,"h":105,"fill":"#dcecff"},
-    {"id":"driver","type":"driver","label":"L298N DUAL H-BRIDGE","sub":"ENA D5 · IN1 D6 · IN2 D7 · IN3 D8 · IN4 D9 · ENB D10","x":330,"y":270,"w":310,"h":125,"fill":"#f05b28"},
-    {"id":"sonar","type":"sensor","label":"HC-SR04","sub":"TRIG A0 · ECHO A1","x":365,"y":430,"w":230,"h":100,"fill":"#fff3c4"},
-    {"id":"left","type":"motor","label":"LEFT MOTOR","sub":"OUT1 / OUT2","x":15,"y":330,"w":150,"h":82,"fill":"#e7fff0"},
-    {"id":"right","type":"motor","label":"RIGHT MOTOR","sub":"OUT3 / OUT4","x":680,"y":330,"w":150,"h":82,"fill":"#e7fbff"}
+  "project":{"name":"BalanceBot Arduino","version":"2.0"},
+  "components":[
+    {"id":"arduino_1","type":"arduino_uno","position":{"x":120,"y":205},"rotation":0},
+    {"id":"mpu_1","type":"mpu6050","position":{"x":430,"y":110},"rotation":0},
+    {"id":"driver_1","type":"l298n","position":{"x":410,"y":350},"rotation":0},
+    {"id":"motor_l","type":"dc_motor","position":{"x":100,"y":530},"rotation":0},
+    {"id":"motor_r","type":"dc_motor","position":{"x":710,"y":530},"rotation":0},
+    {"id":"battery_1","type":"battery_switch","position":{"x":540,"y":565},"rotation":0}
   ],
-  "connections": [
-    {"from":"arduino","to":"mpu","label":"A4 → SDA","color":"i2c"},
-    {"from":"arduino","to":"mpu","label":"A5 → SCL","color":"i2c"},
-    {"from":"arduino","to":"driver","label":"D5/D10 → ENA/ENB","color":"control"},
-    {"from":"driver","to":"left","label":"OUT1 / OUT2","color":"motorL"},
-    {"from":"driver","to":"right","label":"OUT3 / OUT4","color":"motorR"}
-  ]
+  "wires":[
+    {"from":"arduino_1.A4","to":"mpu_1.SDA","label":"I2C","signal":"i2c","color":"i2c"},
+    {"from":"arduino_1.A5","to":"mpu_1.SCL","label":"I2C","signal":"i2c","color":"i2c"},
+    {"from":"arduino_1.5V","to":"mpu_1.VCC","label":"5V → VCC","signal":"power","color":"power"},
+    {"from":"arduino_1.GND","to":"mpu_1.GND","label":"GND مشترك","signal":"ground","color":"ground"},
+    {"from":"arduino_1.D5","to":"driver_1.ENA","label":"PWM ENA","signal":"control","color":"control"},
+    {"from":"driver_1.OUT1","to":"motor_l.M+","label":"OUT1","signal":"motor","color":"motor"},
+    {"from":"driver_1.OUT2","to":"motor_l.M-","label":"OUT2","signal":"motor","color":"motor"},
+    {"from":"battery_1.+","to":"driver_1.12V","label":"VMOTOR +","signal":"power","color":"power"},
+    {"from":"battery_1.-","to":"driver_1.GND","label":"GND","signal":"ground","color":"ground"}
+  ],
+  "settings":{"showPinNumbers":true,"showLabels":true,"showElectricalWarnings":true,"grid":24}
 }

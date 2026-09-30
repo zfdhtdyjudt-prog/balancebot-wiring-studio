@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://balancebot.local/schema/project.schema.json",
+  "title": "BalanceBot Wiring Project",
+  "type": "object",
+  "required": ["project", "components", "wires", "settings"],
+  "properties": {
+    "project": {"type":"object","required":["name","version"],"properties":{"name":{"type":"string","minLength":1},"version":{"type":"string","minLength":1}},"additionalProperties":true},
+    "components": {"type":"array","items":{"$ref":"#/$defs/component"}},
+    "wires": {"type":"array","items":{"$ref":"#/$defs/wire"}},
+    "settings": {"type":"object","properties":{"showPinNumbers":{"type":"boolean"},"showLabels":{"type":"boolean"},"showElectricalWarnings":{"type":"boolean"},"grid":{"type":"integer","minimum":8,"maximum":64}},"additionalProperties":true}
+  },
+  "$defs": {
+    "point": {"type":"object","required":["x","y"],"properties":{"x":{"type":"number"},"y":{"type":"number"}},"additionalProperties":false},
+    "component": {"type":"object","required":["id","type","position"],"properties":{"id":{"type":"string","pattern":"^[a-zA-Z][a-zA-Z0-9_-]*$"},"type":{"type":"string"},"position":{"$ref":"#/$defs/point"},"rotation":{"type":"number"},"label":{"type":"string"}},"additionalProperties":true},
+    "wire": {"type":"object","required":["from","to"],"properties":{"from":{"type":"string","pattern":"^[^./]+\\.[^./]+$"},"to":{"type":"string","pattern":"^[^./]+\\.[^./]+$"},"signal":{"type":"string"},"color":{"type":"string"},"route":{"type":"array","items":{"$ref":"#/$defs/point"}}},"additionalProperties":true}
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BalanceBot Wiring Studio</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">⌁</span><div><strong>BalanceBot Wiring Studio</strong><small>محرر مخطط التوصيلات المحلي</small></div></div>
+    <div class="top-actions"><button id="loadJsonBtn" class="ghost">فتح JSON</button><input id="jsonFile" type="file" accept=".json,application/json" hidden /><button id="downloadSvg" class="ghost">تصدير SVG</button><button id="downloadJson" class="ghost">تنزيل JSON</button><button id="renderBtn" class="primary">رسم المخطط</button></div>
+  </header>
+  <main class="shell">
+    <section class="intro"><div><span class="eyebrow">LOCAL • JSON → SVG</span><h1>ارسم دائرة BalanceBot من الكود</h1><p>اختر النمط، عدّل JSON، واضغط «رسم المخطط». لا يوجد خادم ولا قاعدة بيانات ولا رفع للإنترنت.</p></div><div class="status"><span class="dot"></span><span id="statusText">جاهز للرسم محليًا</span></div></section>
+    <div class="mode-tabs"><button class="mode active" data-mode="arduino">01 · Arduino Standalone <small>5V controller</small></button><button class="mode" data-mode="esp32">02 · ESP32 Standalone <small>3.3V controller</small></button></div>
+    <section class="workspace">
+      <aside class="editor-panel panel"><div class="panel-head"><div><span class="kicker">INPUT</span><h2>كود الدائرة</h2></div><button id="resetBtn" class="mini">إرجاع العينة</button></div><div class="editor-wrap"><div class="line-numbers" id="lineNumbers"></div><textarea id="jsonEditor" spellcheck="false" aria-label="JSON editor"></textarea></div><div id="errorBox" class="error" hidden></div><div class="editor-footer"><label><input id="autoRender" type="checkbox" checked /> رسم تلقائي بعد التعديل</label><span id="stats">0 مكونات · 0 توصيلات</span></div><div class="hint"><b>نصيحة:</b> يمكنك تعديل أسماء المكونات والتوصيلات والـ pins والألوان، أو فتح ملف JSON من جهازك. الرسم مخصص لهذا المشروع فقط.</div></aside>
+      <section class="canvas-panel panel"><div class="panel-head"><div><span class="kicker">LIVE CANVAS</span><h2 id="canvasTitle">Arduino Standalone</h2></div><div class="canvas-tools"><button id="zoomOut" class="mini">−</button><span id="zoomLabel">100%</span><button id="zoomIn" class="mini">+</button><button id="fitBtn" class="mini">ملاءمة</button></div></div><div class="diagram-wrap"><div id="diagram" class="diagram"></div></div><div class="legend" id="legend"></div></section>
+      <aside class="details-panel panel"><div class="panel-head"><div><span class="kicker">SPEC SHEET</span><h2>تفاصيل النمط</h2></div></div><div id="specs"></div><div class="safety"><b>تحذير السلامة</b><p>افصل البطارية قبل تعديل أي سلك. اختبر العجلات مرفوعة. لا توصل 12V إلى Arduino أو ESP32 أو MPU6050.</p></div></aside>
+    </section>
+    <footer><span>BalanceBot Wiring Studio · يعمل محليًا عبر Live Server</span><span>مصدر الأرجل: README_AR.md + PINOUT_AND_POWER_AR.md</span></footer>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>

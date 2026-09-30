@@ -1,0 +1,17 @@
+{
+  "mode": "esp32",
+  "title": "ESP32 Standalone",
+  "components": [
+    {"id":"esp","type":"controller","label":"ESP32 DEVKIT","sub":"3.3V standalone controller","x":60,"y":150,"w":235,"h":350,"fill":"#e8f2ff"},
+    {"id":"mpu","type":"sensor","label":"MPU6050","sub":"SDA GPIO21 · SCL GPIO22 · INT GPIO39","x":390,"y":70,"w":270,"h":110,"fill":"#dcecff"},
+    {"id":"driver","type":"driver","label":"L298N DUAL H-BRIDGE","sub":"ENA 27 · IN1 32 · IN2 33 · IN3 25 · IN4 26 · ENB 14","x":355,"y":285,"w":340,"h":135,"fill":"#f05b28"},
+    {"id":"sonar","type":"sensor","label":"HC-SR04","sub":"TRIG GPIO5 · ECHO GPIO34","x":690,"y":110,"w":190,"h":100,"fill":"#fff3c4"},
+    {"id":"level","type":"note","label":"مقسم جهد إلزامي","sub":"Echo 5V → 3.3V قبل GPIO34","x":690,"y":235,"w":190,"h":58,"fill":"#fff5d8"}
+  ],
+  "connections": [
+    {"from":"esp","to":"mpu","label":"GPIO21 → SDA · GPIO22 → SCL","color":"i2c"},
+    {"from":"esp","to":"driver","label":"GPIO27/14 → ENA/ENB","color":"control"},
+    {"from":"esp","to":"sonar","label":"GPIO5 → TRIG","color":"sensor"},
+    {"from":"sonar","to":"level","label":"ECHO عبر مقسم الجهد","color":"sensor"}
+  ]
+}

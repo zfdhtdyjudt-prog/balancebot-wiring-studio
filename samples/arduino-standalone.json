@@ -1,0 +1,19 @@
+{
+  "mode": "arduino",
+  "title": "Arduino Standalone",
+  "components": [
+    {"id":"arduino","type":"controller","label":"ARDUINO UNO R3","x":60,"y":190,"w":230,"h":300,"fill":"#e8f2ff"},
+    {"id":"mpu","type":"sensor","label":"MPU6050","sub":"I2C · VCC · GND · SDA · SCL","x":380,"y":90,"w":230,"h":105,"fill":"#dcecff"},
+    {"id":"driver","type":"driver","label":"L298N DUAL H-BRIDGE","sub":"ENA D5 · IN1 D6 · IN2 D7 · IN3 D8 · IN4 D9 · ENB D10","x":330,"y":270,"w":310,"h":125,"fill":"#f05b28"},
+    {"id":"sonar","type":"sensor","label":"HC-SR04","sub":"TRIG A0 · ECHO A1","x":365,"y":430,"w":230,"h":100,"fill":"#fff3c4"},
+    {"id":"left","type":"motor","label":"LEFT MOTOR","sub":"OUT1 / OUT2","x":15,"y":330,"w":150,"h":82,"fill":"#e7fff0"},
+    {"id":"right","type":"motor","label":"RIGHT MOTOR","sub":"OUT3 / OUT4","x":680,"y":330,"w":150,"h":82,"fill":"#e7fbff"}
+  ],
+  "connections": [
+    {"from":"arduino","to":"mpu","label":"A4 → SDA","color":"i2c"},
+    {"from":"arduino","to":"mpu","label":"A5 → SCL","color":"i2c"},
+    {"from":"arduino","to":"driver","label":"D5/D10 → ENA/ENB","color":"control"},
+    {"from":"driver","to":"left","label":"OUT1 / OUT2","color":"motorL"},
+    {"from":"driver","to":"right","label":"OUT3 / OUT4","color":"motorR"}
+  ]
+}

@@ -192,12 +192,12 @@
         "OUTPUT"
       ],
       [
-        "GPIO16/RX2",
+        "GPIO16",
         "serial_rx",
         "INPUT"
       ],
       [
-        "GPIO17/TX2",
+        "GPIO17",
         "serial_tx",
         "OUTPUT"
       ],
@@ -212,12 +212,12 @@
         "OUTPUT"
       ],
       [
-        "GPIO21/SDA",
+        "GPIO21",
         "sda",
         "I2C"
       ],
       [
-        "GPIO22/SCL",
+        "GPIO22",
         "scl",
         "I2C"
       ],

@@ -1,7 +1,7 @@
 {
   "project": {
     "name": "BalanceBot ESP32 Standalone",
-    "version": "3.0",
+    "version": "3.1",
     "mode": "esp32_standalone"
   },
   "components": [
@@ -153,14 +153,14 @@
       "color": "ground"
     },
     {
-      "from": "esp_1.GPIO21/SDA",
+      "from": "esp_1.GPIO21",
       "to": "mpu_1.SDA",
       "label": "I2C SDA",
       "signal": "i2c",
       "color": "i2c"
     },
     {
-      "from": "esp_1.GPIO22/SCL",
+      "from": "esp_1.GPIO22",
       "to": "mpu_1.SCL",
       "label": "I2C SCL",
       "signal": "i2c",
@@ -174,7 +174,7 @@
       "color": "power"
     },
     {
-      "from": "esp_1.GPIO5",
+      "from": "esp_1.GPIO16",
       "to": "sonar_1.TRIG",
       "label": "TRIG",
       "signal": "sensor",
@@ -189,20 +189,20 @@
     },
     {
       "from": "level_1.OUT/ESP32",
-      "to": "esp_1.GPIO34",
+      "to": "esp_1.GPIO17",
       "label": "safe 3.3V Echo",
       "signal": "sensor",
       "color": "sensor"
     },
     {
-      "from": "esp_1.GPIO32",
+      "from": "esp_1.GPIO35",
       "to": "pot_1.SIG/WIPER",
       "label": "volume analog input",
       "signal": "sensor",
       "color": "sensor"
     },
     {
-      "from": "esp_1.GPIO27",
+      "from": "esp_1.GPIO4",
       "to": "buzzer_1.SIG/PWM",
       "label": "buzzer PWM",
       "signal": "control",
@@ -216,7 +216,7 @@
       "color": "control"
     },
     {
-      "from": "esp_1.GPIO26",
+      "from": "esp_1.GPIO27",
       "to": "driver_1.IN1",
       "label": "left direction A",
       "signal": "control",
@@ -230,14 +230,14 @@
       "color": "control"
     },
     {
-      "from": "esp_1.GPIO18",
+      "from": "esp_1.GPIO13",
       "to": "driver_1.IN3",
       "label": "right direction A",
       "signal": "control",
       "color": "control"
     },
     {
-      "from": "esp_1.GPIO19",
+      "from": "esp_1.GPIO23",
       "to": "driver_1.IN4",
       "label": "right direction B",
       "signal": "control",
@@ -278,6 +278,9 @@
     "showElectricalWarnings": true,
     "grid": 24,
     "powerSystem": "3S_18650",
-    "sharedGround": true
+    "sharedGround": true,
+    "pinNaming": "physical_silkscreen",
+    "esp32Naming": "GPIOxx",
+    "wiringTableVersion": "3.1"
   }
 }

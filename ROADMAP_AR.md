@@ -1,6 +1,6 @@
 # خارطة الطريق — BalanceBot Wiring Studio
 
-## الإصدار 3.0 المنفذ
+## الإصدار 3.1 المنفذ
 
 - مكتبة 27 مكوّنًا مع 120 طرفًا فعليًا ووظيفة/اتجاه/جهد لكل طرف.
 - Arduino Only، Hybrid Arduino + ESP32، وESP32 Standalone.

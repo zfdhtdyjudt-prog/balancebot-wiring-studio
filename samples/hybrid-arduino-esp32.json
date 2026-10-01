@@ -1,7 +1,7 @@
 {
   "project": {
     "name": "BalanceBot Hybrid Arduino + ESP32",
-    "version": "3.0",
+    "version": "3.1",
     "mode": "hybrid"
   },
   "components": [
@@ -167,7 +167,7 @@
       "color": "control"
     },
     {
-      "from": "esp_1.GPIO17/TX2",
+      "from": "esp_1.GPIO17",
       "to": "arduino_1.RX←0",
       "label": "ESP32 TX to Arduino RX",
       "signal": "serial",
@@ -175,7 +175,7 @@
     },
     {
       "from": "arduino_1.TX→1",
-      "to": "esp_1.GPIO16/RX2",
+      "to": "esp_1.GPIO16",
       "label": "Arduino TX to ESP32 RX",
       "signal": "serial",
       "color": "serial"
@@ -250,6 +250,9 @@
     "showElectricalWarnings": true,
     "grid": 24,
     "powerSystem": "3S_18650",
-    "sharedGround": true
+    "sharedGround": true,
+    "pinNaming": "physical_silkscreen",
+    "esp32Naming": "GPIOxx",
+    "wiringTableVersion": "3.1"
   }
 }

@@ -529,6 +529,9 @@
     "powerSystem": "3S_18650",
     "sharedGround": true,
     "routing": "orthogonal_obstacle_avoiding",
-    "padding": 48
+    "padding": 48,
+    "pinNaming": "physical_silkscreen",
+    "esp32Naming": "GPIOxx",
+    "wiringTableVersion": "3.1"
   }
 }

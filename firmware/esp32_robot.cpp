@@ -16,6 +16,12 @@
 #include <WebServer.h>
 #include <BluetoothSerial.h>
 
+// Set to 1 for Hybrid Arduino + ESP32; keep 0 for ESP32 Standalone.
+// GPIO16/17 cannot be UART2 and HC-SR04 pins at the same time.
+#ifndef BALANCEBOT_HYBRID_MODE
+#define BALANCEBOT_HYBRID_MODE 0
+#endif
+
 constexpr uint8_t LEFT_PWM = 25;    // GPIO25
 constexpr uint8_t LEFT_IN1 = 27;    // GPIO27
 constexpr uint8_t LEFT_IN2 = 14;    // GPIO14
@@ -71,24 +77,36 @@ void handleCommand(char c) {
 }
 void pollTransports() {
   while (Serial.available()) handleCommand(static_cast<char>(Serial.read()));
+#if BALANCEBOT_HYBRID_MODE
   while (RobotSerial.available()) handleCommand(static_cast<char>(RobotSerial.read()));
+#endif
   while (BalanceBotBluetooth.available()) handleCommand(static_cast<char>(BalanceBotBluetooth.read()));
 }
 void sendTelemetry(Stream &out) {
   if (millis() - lastTelemetry < 500) return;
   lastTelemetry = millis();
+#if BALANCEBOT_HYBRID_MODE
+  const unsigned long distanceMm = 0; // HC-SR04 belongs to Arduino in Hybrid mode.
+#else
   digitalWrite(SONAR_TRIG, LOW); delayMicroseconds(2); digitalWrite(SONAR_TRIG, HIGH); delayMicroseconds(10); digitalWrite(SONAR_TRIG, LOW);
   const unsigned long echoUs = pulseIn(SONAR_ECHO, HIGH, 25000UL);
   const unsigned long distanceMm = echoUs ? (echoUs * 343UL) / 2000UL : 0;
+#endif
   out.print(F("telemetry distance_mm=")); out.print(distanceMm); out.print(F(" pot=")); out.print(analogRead(POT_PIN)); out.print(F(" ir=")); out.println(digitalRead(IR_PIN));
 }
 void handleHttpCommand() { if (server.hasArg("c") && server.arg("c").length()) handleCommand(server.arg("c")[0]); server.send(200, "text/plain", "ok"); }
 void setup() {
   pinMode(LEFT_IN1, OUTPUT); pinMode(LEFT_IN2, OUTPUT); pinMode(RIGHT_IN1, OUTPUT); pinMode(RIGHT_IN2, OUTPUT);
-  pinMode(SONAR_TRIG, OUTPUT); pinMode(SONAR_ECHO, INPUT); pinMode(IR_PIN, INPUT);
+#if !BALANCEBOT_HYBRID_MODE
+  pinMode(SONAR_TRIG, OUTPUT); pinMode(SONAR_ECHO, INPUT);
+#endif
+  pinMode(IR_PIN, INPUT);
   pinMode(LED_RED_1, OUTPUT); pinMode(LED_RED_2, OUTPUT); pinMode(LED_GREEN_1, OUTPUT); pinMode(LED_GREEN_2, OUTPUT);
   ledcAttach(LEFT_PWM, 20000, 8); ledcAttach(RIGHT_PWM, 20000, 8); ledcAttach(BUZZER_PIN, 440, 8);
-  Wire.begin(21, 22); Serial.begin(115200); RobotSerial.begin(115200, SERIAL_8N1, UART2_RX, UART2_TX);
+  Wire.begin(21, 22); Serial.begin(115200);
+#if BALANCEBOT_HYBRID_MODE
+  RobotSerial.begin(115200, SERIAL_8N1, UART2_RX, UART2_TX);
+#endif
   BalanceBotBluetooth.begin("BalanceBot");
   WiFi.mode(WIFI_AP); WiFi.softAP("BalanceBot", "balancebot");
   server.on("/command", HTTP_GET, handleHttpCommand); server.begin(); stopMotors();

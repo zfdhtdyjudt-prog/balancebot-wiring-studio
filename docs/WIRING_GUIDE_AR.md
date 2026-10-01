@@ -78,7 +78,7 @@ Arduino TX→1 ── R1=1kΩ ──●── ESP32 GPIO16
 | LEDs | أحمر `GPIO18/GPIO19`، أخضر `GPIO32/GPIO33` |
 | MPU6050 INT | غير موصل |
 
-في هذا الوضع لا تستخدم GPIO16 وGPIO17 لـUART2 في الوقت نفسه؛ هما مخصصان لـHC-SR04 حسب جدول ESP32 Standalone. إذا احتجت UART2، اختر GPIO بديلة في تصميم منفصل وحدّث الـregistry والـFirmware معًا.
+في هذا الوضع لا تستخدم GPIO16 وGPIO17 لـUART2 في الوقت نفسه؛ هما مخصصان لـHC-SR04 حسب جدول ESP32 Standalone. يختار `firmware/esp32_robot.cpp` الوضع عبر `BALANCEBOT_HYBRID_MODE=0` (Standalone) أو `-DBALANCEBOT_HYBRID_MODE=1` (Hybrid). إذا احتجت UART2، لا تشغّل HC-SR04 على GPIO16/17 في نفس البناء.
 
 ## 5. طاقة 3S والحماية
 

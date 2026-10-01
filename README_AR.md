@@ -61,6 +61,7 @@
 
 - `firmware/arduino_uno_robot.cpp` — كود Arduino Uno R3 بالتوصيلات النهائية.
 - `firmware/esp32_robot.cpp` — كود ESP32 Dev Board مع Bluetooth وWi‑Fi AP وUART2.
+  - الوضع الافتراضي Standalone: `BALANCEBOT_HYBRID_MODE=0`. للوضع Hybrid: أضف `-DBALANCEBOT_HYBRID_MODE=1`؛ عندها يستخدم ESP32 `GPIO16/17` لـUART2 ولا يستخدمهما للـHC-SR04.
 - `firmware/unified_robot.cpp` — wrapper يختار الملف المناسب حسب تعريف منصة البناء.
 - `tools/bridge.py` — إرسال أوامر الحركة عبر Serial أو Wi‑Fi.
 

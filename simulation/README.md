@@ -44,3 +44,7 @@ Phase 1 does not claim analog, CircuitJS, Matter.js, ESP32, or physical simulati
 ## Phase 2 implementation status
 
 Phase 2 includes `orthogonal-router.js` for obstacle-aware grid A* paths and `interactive-components.js` for Wokwi-style local Web Components. Optional CDN loading is best-effort and falls back to local components. A real Arduino Uno compiler API test completed with `arduino:avr:uno` and returned valid Intel HEX.
+
+## Phase 3 implementation status
+
+Phase 3 adds `analog-engine.js`, `physics-world.js`, and `hybrid-engine.js`. The analog model exposes battery rail, capacitor charging, L298N-style voltage drop, motor RPM/current, and differential PWM. Matter.js provides a 2D chassis and wheel world through a CDN import with a visible unavailable state if the CDN cannot load.

@@ -1,0 +1,7 @@
+export class AnalogEngine {
+  constructor({ supplyVoltage = 11.1, capacitanceFarads = 0.0001 } = {}) { this.supplyVoltage = supplyVoltage; this.capacitanceFarads = capacitanceFarads; this.capacitorVoltage = 0; this.time = 0; this.left = { pwm: 0, voltage: 0, rpm: 0, current: 0 }; this.right = { pwm: 0, voltage: 0, rpm: 0, current: 0 }; }
+  reset() { this.capacitorVoltage = 0; this.time = 0; this.left = { pwm: 0, voltage: 0, rpm: 0, current: 0 }; this.right = { pwm: 0, voltage: 0, rpm: 0, current: 0 }; }
+  step(dtSeconds, leftPwm = 0, rightPwm = 0) { const dt = Math.max(0.0001, Math.min(0.1, dtSeconds)); this.time += dt; const rail = this.supplyVoltage * 0.92; const chargeTarget = this.supplyVoltage; const chargeRate = (chargeTarget - this.capacitorVoltage) / (0.33 + this.capacitanceFarads * 1000); this.capacitorVoltage = Math.max(0, Math.min(chargeTarget, this.capacitorVoltage + chargeRate * dt)); this.left = this.#motor(leftPwm, rail); this.right = this.#motor(rightPwm, rail); return this.snapshot(); }
+  #motor(pwm, rail) { const duty = Math.max(-1, Math.min(1, Number(pwm) / 255)); const voltage = duty * Math.max(0, rail - 2.0); const rpm = voltage * 280; const current = Math.abs(duty) * 0.42 + (Math.abs(duty) > 0.02 ? 0.08 : 0); return { pwm: Math.round(duty * 255), voltage, rpm, current }; }
+  snapshot() { return { time: this.time, supplyVoltage: this.supplyVoltage, capacitorVoltage: this.capacitorVoltage, left: { ...this.left }, right: { ...this.right }, totalCurrent: this.left.current + this.right.current }; }
+}

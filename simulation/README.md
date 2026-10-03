@@ -1,50 +1,112 @@
-# BalanceBot Hybrid Co-Simulation — Phase 0/1
+# BalanceBot Hybrid Co-Simulation
 
-## Phase 0 structure
+## Current status
+
+The project is a staged browser-based wiring editor and educational hybrid-simulation prototype. The current implementation has four layers:
+
+1. **Phase 0/1 — Digital core:** Monaco/fallback editor, Arduino compiler endpoint contract, Intel HEX parser, and bounded `avr8js` execution for Arduino Uno.
+2. **Phase 2 — Interactive UI:** local Web Components for LEDs, motors, potentiometers, and HC-SR04-style controls, plus obstacle-aware orthogonal A* routing.
+3. **Phase 3 — Analog + physics:** a simplified battery/capacitor/L298N/motor model and a Matter.js 2D chassis-and-wheels world.
+4. **Phase 4 — Sensor adapter:** virtual MPU6050 and HC-SR04 readings driven by the Matter.js body state and the shared animation tick.
+
+This is not yet a SPICE/CircuitJS solver, an ESP32 emulator, a real I²C/GPIO bus, or a hardware measurement system.
+
+## Source files
 
 ```text
 simulation/
-├── README.md
-├── main.js
-├── digital-core.js
-├── monaco-editor.js
-├── compile-service.js
-├── intel-hex.js
-├── avr8js-runner.js
-└── default-sketch.js
-
-compiler-service/
-├── server.mjs
-├── package.json
-├── Dockerfile
-└── README.md
+├── main.js                 # Digital-core browser bootstrap
+├── digital-core.js         # Compile → HEX → AVR execution coordinator
+├── monaco-editor.js        # Monaco loader with textarea fallback
+├── compile-service.js       # Browser client for /api/compile
+├── intel-hex.js             # Validated Intel HEX parser
+├── avr8js-runner.js         # ATmega328P/AVR adapter
+├── default-sketch.js        # Initial Arduino sketch
+├── orthogonal-router.js     # Obstacle-aware grid A* router
+├── interactive-components.js# Local Wokwi-style Web Components
+├── analog-engine.js         # Educational analog and motor model
+├── physics-world.js         # Matter.js chassis, wheels, telemetry, controls
+├── sensor-engine.js         # MPU6050Model, HCSR04Model, SensorBus
+└── hybrid-engine.js         # Shared tick connecting analog, physics, and sensors
 ```
 
-## Phase 1 scope
+The static publication configuration copies `index.html`, `styles.css`, `app.js`, the registry, routes, samples, and schema. Because the publisher does not reliably expose every nested source module as a browser asset, `app.js` contains a generated browser bundle that imports the current phase modules. The separated source files remain the readable and testable source of truth.
 
-This phase implements the digital-core boundary only:
+## Phase-four sensor contract
 
-- Monaco Editor is loaded lazily from the official CDN.
-- Arduino source is sent to a configurable `/api/compile` endpoint.
-- Intel HEX is decoded into AVR flash words.
-- `avr8js` is loaded as an ES module when a HEX image is run.
-- ATmega328P CPU cycles execute in bounded batches.
-- AVR ports B, C, and D are observed and exposed as Arduino pin states.
-- The UI reports compile, load, run, pause, and GPIO events.
-- The optional compiler service invokes `arduino-cli` in a temporary isolated directory.
+`SensorBus.update(bodyState, dtSeconds, distanceCm)` returns:
 
-Phase 1 does not claim analog, CircuitJS, Matter.js, ESP32, or physical simulation support. Those belong to later phases.
+```js
+{
+  time,
+  mpu6050: {
+    address: '0x68',
+    pitchDeg,
+    rollDeg,
+    yawDeg,
+    gyroXDegS,
+    gyroYDegS,
+    gyroZDegS,
+    accelX,
+    accelY,
+    accelZ,
+    sampleHz
+  },
+  hcSr04: {
+    distanceCm,
+    echoUs,
+    triggerMs,
+    obstacleStop,
+    valid,
+    sampleHz
+  },
+  buses: {
+    mpu6050: 'I2C · 0x68',
+    hcSr04: 'TRIG/ECHO · virtual pulse'
+  }
+}
+```
 
-## Later boundaries
+### MPU6050 mapping
 
-- Phase 2: interactive component Web Components and advanced A* routing.
-- Phase 3: capacitors, resistors, diodes, L298N/TB6612FNG models, ADC injection, and analog ticks.
-- Phase 4: Matter.js robot body, wheels, friction, motor torque, IMU feedback, and balancing physics.
+- Matter.js `chassis.angle` becomes `pitchDeg`/`yawDeg` in degrees.
+- Matter.js `chassis.angularVelocity` becomes `gyroZDegS`.
+- Gravity is projected into `accelX` and `accelZ` using the body angle.
+- The sample frequency is derived from the shared `dtSeconds`.
 
-## Phase 2 implementation status
+### HC-SR04 mapping
 
-Phase 2 includes `orthogonal-router.js` for obstacle-aware grid A* paths and `interactive-components.js` for Wokwi-style local Web Components. Optional CDN loading is best-effort and falls back to local components. A real Arduino Uno compiler API test completed with `arduino:avr:uno` and returned valid Intel HEX.
+- The UI distance slider is clamped to 2–400cm.
+- Echo duration uses the educational relation `echoUs = distanceCm × 58.2`.
+- A distance below 20cm sets `obstacleStop=true`.
+- The hybrid loop multiplies both motor voltages by zero when `obstacleStop` is true.
 
-## Phase 3 implementation status
+### Shared loop
 
-Phase 3 adds `analog-engine.js`, `physics-world.js`, and `hybrid-engine.js`. The analog model exposes battery rail, capacitor charging, L298N-style voltage drop, motor RPM/current, and differential PWM. Matter.js provides a 2D chassis and wheel world through a CDN import with a visible unavailable state if the CDN cannot load.
+```js
+const reading = sensors.update(world?.telemetry() || {}, dt, distanceCm);
+const driveScale = reading.hcSr04.obstacleStop ? 0 : 1;
+world?.drive(leftVoltage * driveScale, rightVoltage * driveScale);
+```
+
+The virtual sensor panel exposes pitch, gyro, acceleration, distance, Echo duration, and safety state. It explicitly states that the values are virtual and not readings from a physical sensor.
+
+## Verification
+
+The project checks include:
+
+```sh
+python3 check-project.py
+node --check app.js
+node --check simulation/*.js
+```
+
+The phase-four focused test verifies 30° pitch conversion, gyro conversion, HC-SR04 Echo timing at 12cm, the under-20cm safety stop, and SensorBus updates with a physics body state.
+
+## Boundaries
+
+- Matter.js is loaded from CDN and has an explicit offline/unavailable state.
+- The analog model is educational: it does not solve Kirchhoff/MNA equations or reproduce a manufacturer-accurate L298N thermal/electrical model.
+- The MPU6050 and HC-SR04 are virtual adapters; no I²C register emulation or ultrasonic ray-casting exists yet.
+- The project has no complete ESP32/QEMU emulator or full PID self-balancing model.
+- The compiler service is optional and must run separately with Arduino CLI; a public static page does not receive arbitrary compiler privileges.

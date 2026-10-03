@@ -729,6 +729,10 @@ void loop() {
       this.paused = false;
       this.onStatus("Matter.js resumed \xB7 physics running");
     }
+    telemetry() {
+      if (!this.chassis) return { angle: 0, angularVelocity: 0, x: 300, y: 150, vx: 0, vy: 0 };
+      return { angle: Number(this.chassis.angle) || 0, angularVelocity: Number(this.chassis.angularVelocity) || 0, x: Number(this.chassis.position.x) || 300, y: Number(this.chassis.position.y) || 150, vx: Number(this.chassis.velocity.x) || 0, vy: Number(this.chassis.velocity.y) || 0 };
+    }
     reset() {
       if (!this.matter || !this.chassis) return;
       const { Body } = this.matter;
@@ -747,9 +751,91 @@ void loop() {
     }
   };
 
+  // simulation/sensor-engine.js
+  var clamp = (value, min, max) => Math.max(min, Math.min(max, Number(value) || 0));
+  var _MPU6050Model_instances, zero_fn;
+  var MPU6050Model = class {
+    constructor({ address = "0x68", gravity = 9.80665 } = {}) {
+      __privateAdd(this, _MPU6050Model_instances);
+      this.address = address;
+      this.gravity = gravity;
+      this.state = __privateMethod(this, _MPU6050Model_instances, zero_fn).call(this);
+    }
+    reset() {
+      this.state = __privateMethod(this, _MPU6050Model_instances, zero_fn).call(this);
+    }
+    sample(body = {}, dtSeconds = 0) {
+      const dt = Math.max(1e-4, Number(dtSeconds) || 0.016);
+      const angle = Number(body.angle) || 0;
+      const angularVelocity = Number(body.angularVelocity) || 0;
+      const pitchDeg = angle * 180 / Math.PI;
+      const gyroZDegS = angularVelocity * 180 / Math.PI;
+      const accelX = Math.sin(angle) * this.gravity;
+      const accelY = 0;
+      const accelZ = Math.cos(angle) * this.gravity;
+      this.state = { address: this.address, pitchDeg, rollDeg: 0, yawDeg: pitchDeg, gyroXDegS: 0, gyroYDegS: 0, gyroZDegS, accelX, accelY, accelZ, sampleHz: 1 / dt };
+      return { ...this.state };
+    }
+  };
+  _MPU6050Model_instances = new WeakSet();
+  zero_fn = function() {
+    return { address: this.address, pitchDeg: 0, rollDeg: 0, yawDeg: 0, gyroXDegS: 0, gyroYDegS: 0, gyroZDegS: 0, accelX: 0, accelY: 0, accelZ: this.gravity, sampleHz: 0 };
+  };
+  var _HCSR04Model_instances, zero_fn2;
+  var HCSR04Model = class {
+    constructor({ minDistanceCm = 2, maxDistanceCm = 400 } = {}) {
+      __privateAdd(this, _HCSR04Model_instances);
+      this.minDistanceCm = minDistanceCm;
+      this.maxDistanceCm = maxDistanceCm;
+      this.requestedDistanceCm = 80;
+      this.state = __privateMethod(this, _HCSR04Model_instances, zero_fn2).call(this);
+    }
+    setDistance(distanceCm) {
+      this.requestedDistanceCm = clamp(distanceCm, this.minDistanceCm, this.maxDistanceCm);
+    }
+    reset() {
+      this.requestedDistanceCm = 80;
+      this.state = __privateMethod(this, _HCSR04Model_instances, zero_fn2).call(this);
+    }
+    sample(dtSeconds = 0) {
+      const dt = Math.max(1e-4, Number(dtSeconds) || 0.016);
+      const distanceCm = clamp(this.requestedDistanceCm, this.minDistanceCm, this.maxDistanceCm);
+      this.state = { distanceCm, echoUs: distanceCm * 58.2, triggerMs: 0.01, obstacleStop: distanceCm < 20, valid: true, sampleHz: 1 / dt };
+      return { ...this.state };
+    }
+  };
+  _HCSR04Model_instances = new WeakSet();
+  zero_fn2 = function() {
+    return { distanceCm: this.requestedDistanceCm, echoUs: this.requestedDistanceCm * 58.2, triggerMs: 0.01, obstacleStop: false, valid: true, sampleHz: 0 };
+  };
+  var SensorBus = class {
+    constructor() {
+      this.mpu6050 = new MPU6050Model();
+      this.hcSr04 = new HCSR04Model();
+      this.running = false;
+      this.last = null;
+    }
+    reset() {
+      this.mpu6050.reset();
+      this.hcSr04.reset();
+      this.running = false;
+      this.last = null;
+    }
+    update(bodyState = {}, dtSeconds = 0.016, distanceCm = 80) {
+      this.hcSr04.setDistance(distanceCm);
+      this.last = { time: performance.now(), mpu6050: this.mpu6050.sample(bodyState, dtSeconds), hcSr04: this.hcSr04.sample(dtSeconds), buses: { mpu6050: "I2C \xB7 0x68", hcSr04: "TRIG/ECHO \xB7 virtual pulse" } };
+      this.running = true;
+      return this.last;
+    }
+    snapshot() {
+      return this.last || { time: 0, mpu6050: this.mpu6050.state, hcSr04: this.hcSr04.state, buses: { mpu6050: "I2C \xB7 0x68", hcSr04: "TRIG/ECHO \xB7 virtual pulse" } };
+    }
+  };
+
   // simulation/hybrid-engine.js
   var $ = (id) => document.getElementById(id);
   var analog = new AnalogEngine();
+  var sensors = new SensorBus();
   var world = null;
   var running = false;
   var last = performance.now();
@@ -764,8 +850,20 @@ void loop() {
     setText("analogRight", `${state.right.rpm.toFixed(0)} RPM \xB7 ${state.right.voltage.toFixed(2)} V`);
     setText("analogCurrent", `${state.totalCurrent.toFixed(2)} A`);
   }
+  function updateSensorTelemetry(reading) {
+    const imu = reading.mpu6050;
+    const sonar = reading.hcSr04;
+    setText("mpuPitch", `${imu.pitchDeg.toFixed(2)}\xB0`);
+    setText("mpuGyro", `${imu.gyroZDegS.toFixed(2)}\xB0/s`);
+    setText("mpuAccelX", `${imu.accelX.toFixed(2)} m/s\xB2`);
+    setText("mpuAccelZ", `${imu.accelZ.toFixed(2)} m/s\xB2`);
+    setText("sonarDistance", `${sonar.distanceCm.toFixed(1)} cm`);
+    setText("sonarEcho", `${sonar.echoUs.toFixed(0)} \u03BCs`);
+    setText("sonarSafety", sonar.obstacleStop ? "\u062A\u0648\u0642\u0641 \u0623\u0645\u0627\u0646 < 20cm" : "\u0645\u0633\u0627\u0631 \u0645\u0641\u062A\u0648\u062D");
+    setText("sensorStatus", `\u0627\u0641\u062A\u0631\u0627\u0636\u064A \xB7 ${imu.sampleHz.toFixed(0)}Hz`);
+  }
   function controls() {
-    return { left: Number($("physicsLeft")?.value || 0), right: Number($("physicsRight")?.value || 0) };
+    return { left: Number($("physicsLeft")?.value || 0), right: Number($("physicsRight")?.value || 0), distance: Number($("sensorDistance")?.value || 80) };
   }
   function frame(now) {
     if (!running) return;
@@ -773,8 +871,11 @@ void loop() {
     last = now;
     const values = controls();
     const state = analog.step(dt, values.left, values.right);
+    const reading = sensors.update(world?.telemetry() || {}, dt, values.distance);
     updateTelemetry(state);
-    world?.drive(state.left.voltage, state.right.voltage);
+    updateSensorTelemetry(reading);
+    const driveScale = reading.hcSr04.obstacleStop ? 0 : 1;
+    world?.drive(state.left.voltage * driveScale, state.right.voltage * driveScale);
     requestAnimationFrame(frame);
   }
   async function start2() {
@@ -800,7 +901,9 @@ void loop() {
   function reset() {
     pause();
     analog.reset();
+    sensors.reset();
     updateTelemetry(analog.snapshot());
+    updateSensorTelemetry(sensors.snapshot());
     world?.reset();
     setText("physicsStatus", world?.ready ? "Matter.js \u062C\u0627\u0647\u0632 \xB7 \u062A\u0645 \u0625\u0639\u0627\u062F\u0629 \u0627\u0644\u0648\u0636\u0639" : "\u062C\u0627\u0647\u0632 \u0644\u0644\u0628\u062F\u0621");
   }
@@ -809,8 +912,10 @@ void loop() {
     $("physicsPause")?.addEventListener("click", pause);
     $("physicsReset")?.addEventListener("click", reset);
     ["physicsLeft", "physicsRight"].forEach((id) => $(id)?.addEventListener("input", () => setText(`${id}Value`, $(id).value)));
+    $("sensorDistance")?.addEventListener("input", () => setText("sensorDistanceValue", `${$("sensorDistance").value} cm`));
     updateTelemetry(analog.snapshot());
+    updateSensorTelemetry(sensors.snapshot());
   }
   wire();
-  window.balancebotPhysics = { start: start2, pause, reset, analog, getWorld: () => world };
+  window.balancebotPhysics = { start: start2, pause, reset, analog, sensors, getWorld: () => world };
 })();

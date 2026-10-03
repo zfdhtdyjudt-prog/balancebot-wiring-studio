@@ -2234,3 +2234,64 @@ PORTC bit 0..5 → Arduino pins 14..19 / A0..A5
 - لا يوجد بناء Arduino داخل الموقع المنشور ما لم تُشغّل خدمة compile منفصلة.
 
 هذه الحدود مقصودة حتى تبقى كل مرحلة قابلة للتحقق بدل تقديم زر محاكاة يوحي بقدرات غير موجودة.
+
+---
+
+# ملحق: المرحلة الثانية — الواجهة والمكونات التفاعلية
+
+تمت إضافة طبقة المرحلة الثانية دون حذف النواة الرقمية أو محرر التوصيلات السابق.
+
+## الملفات الجديدة
+
+- `simulation/orthogonal-router.js`
+- `simulation/interactive-components.js`
+- لوحة `INTERACTIVE COMPONENTS · PHASE 2` داخل الواجهة.
+- حدث `balancebot-diagram-rendered` بين renderer وطبقة التفاعل.
+- حدث `balancebot-component-change` لعرض تغييرات المستخدم.
+
+## A* Orthogonal Router
+
+يستخدم مسار الأسلاك شبكة متعامدة وخوارزمية بحث A* مبسطة:
+
+1. تقسيم مساحة الرسم إلى خلايا 24px.
+2. استبعاد مستطيلات المكونات مع padding قدره 18px.
+3. السماح بحركة أعلى/أسفل/يمين/يسار فقط.
+4. تقييم المسار حسب المسافة.
+5. منع المرور داخل المكونات الأخرى.
+6. إعادة مسار متعامد بسيط إذا تعذر إيجاد مسار شبكي.
+
+المسار يحسن الوضوح البصري، لكنه ليس DRC كهربائيًا.
+
+## المكونات التفاعلية
+
+- LED: نقر للتبديل بين ON/OFF مع إضاءة CSS.
+- TT Motor: نقر للتبديل بين متوقف وPWM تجريبي مع دوران بصري.
+- Potentiometer: شريط منزلق من 0 إلى 1023 يمثل WIPER.
+- HC-SR04: شريط مسافة من 2 إلى 400cm يمثل ECHO افتراضيًا.
+
+القيم الحالية تفاعلية داخل الواجهة وليست قياسات كهربائية حقيقية.
+
+## Wokwi Elements وFallback
+
+يحاول `interactive-components.js` تحميل `wokwi-elements` من CDN اختياريًا. إذا نجح يظهر runtime الخارجي، وإذا فشل CDN يستخدم الموقع Web Components محلية باسم `balancebot-*` حتى تبقى الواجهة قابلة للتشغيل.
+
+هذه طبقة Wokwi-style مع adapter اختياري، وليست ادعاءً بأن كل مكونات Wokwi أصبحت محاكية كهربائيًا.
+
+## حدود المرحلة الثانية
+
+لم يتم بعد تنفيذ CircuitJS/SPICE، معادلات المكثفات، حقن ADC الحقيقي، نموذج L298N التناظري، Matter.js، ESP32 emulator، أو تشغيل محرك حقيقي وفق PWM. هذه عناصر المرحلتين الثالثة والرابعة.
+
+## اختبار Compiler Service
+
+تم اختبار المسار كاملًا باستخدام Arduino CLI ومنصة `arduino:avr`:
+
+```text
+POST /api/compile
+board: arduino:avr:uno
+result: ok=true
+artifact: Intel HEX
+hex length: 2611 characters
+EOF record: present
+```
+
+كود الاختبار استخدم `pinMode`, `digitalWrite`, و`delay` على LED في pin 13. تم إصلاح بنية sketch، البحث التكراري عن HEX داخل build، وجعل `ARDUINO_DIRECTORIES_DATA` قابلًا للتهيئة.

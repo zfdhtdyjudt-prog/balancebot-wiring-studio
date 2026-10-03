@@ -40,3 +40,7 @@ Phase 1 does not claim analog, CircuitJS, Matter.js, ESP32, or physical simulati
 - Phase 2: interactive component Web Components and advanced A* routing.
 - Phase 3: capacitors, resistors, diodes, L298N/TB6612FNG models, ADC injection, and analog ticks.
 - Phase 4: Matter.js robot body, wheels, friction, motor torque, IMU feedback, and balancing physics.
+
+## Phase 2 implementation status
+
+Phase 2 includes `orthogonal-router.js` for obstacle-aware grid A* paths and `interactive-components.js` for Wokwi-style local Web Components. Optional CDN loading is best-effort and falls back to local components. A real Arduino Uno compiler API test completed with `arduino:avr:uno` and returned valid Intel HEX.

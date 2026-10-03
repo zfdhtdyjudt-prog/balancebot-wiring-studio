@@ -2150,3 +2150,29 @@ node server.mjs
 docker build -t balancebot-compiler .
 docker run --rm -p 8787:8787 balancebot-compiler
 ```
+
+---
+
+# ملحق: المرحلة الثانية — الواجهة والمكونات التفاعلية
+
+تم تنفيذ طبقة المرحلة الثانية بإضافة:
+
+- `simulation/orthogonal-router.js` لمسارات A* متعامدة تتجنب عوائق المكونات.
+- `simulation/interactive-components.js` لعناصر Web Components تفاعلية.
+- لوحة تفاعلية تشمل LED وTT Motor وPotentiometer وHC-SR04.
+- تحميل اختياري لـ`wokwi-elements` من CDN مع fallback محلي.
+- أحداث `balancebot-diagram-rendered` و`balancebot-component-change`.
+
+النقر على LED يبدل حالته، والنقر على المحرك يبدل PWM تجريبيًا، كما تتحكم أشرطة Potentiometer وHC-SR04 في قيم واجهة افتراضية. هذه ليست بعد محاكاة CircuitJS أو ADC أو Firmware كاملة.
+
+تم تثبيت Arduino CLI ومنصة `arduino:avr` واختبار:
+
+```text
+POST /api/compile
+board = arduino:avr:uno
+ok = true
+Intel HEX صالح
+طول HEX = 2611 حرفًا
+```
+
+لم تبدأ بعد مرحلة CircuitJS أو Matter.js.

@@ -2097,3 +2097,56 @@ BalanceBot Wiring Studio هو منصة توثيق وتحرير توصيلات م
 - ضمان أن الدائرة الواقعية آمنة أو ستعمل دون قياس واختبار.
 
 لذلك هو **يشبه Wokwi في تجربة رسم وتوثيق التوصيلات، لكنه ليس Wokwi كاملًا من ناحية محاكاة المتحكم والدوائر والفيزياء**.
+
+
+---
+
+# ملحق: تنفيذ النواة الرقمية — المرحلة 0 والمرحلة 1
+
+تمت إضافة طبقة النواة الرقمية داخل مجلد `simulation/` مع خدمة تجميع اختيارية داخل `compiler-service/`، دون حذف محرر التوصيلات أو عينات JSON السابقة.
+
+## الملفات
+
+```text
+simulation/main.js
+simulation/digital-core.js
+simulation/monaco-editor.js
+simulation/compile-service.js
+simulation/intel-hex.js
+simulation/avr8js-runner.js
+simulation/default-sketch.js
+compiler-service/server.mjs
+compiler-service/Dockerfile
+```
+
+## الوظائف المنفذة
+
+- تحميل Monaco Editor من CDN مع fallback إلى textarea.
+- إرسال كود Arduino إلى `POST /api/compile`.
+- تشغيل Arduino CLI اختياريًا في خدمة منفصلة.
+- تحليل Intel HEX وفحص checksum وEOF والعناوين الممتدة.
+- تحويل HEX إلى Flash words.
+- تحميل avr8js عند الطلب.
+- تشغيل ATmega328P بدورات محددة.
+- مراقبة PORTB وPORTC وPORTD.
+- تحويل بتات المنافذ إلى حالات Arduino الرقمية.
+- تشغيل/إيقاف/خطوة واحدة.
+- عرض سجل GPIO داخل الموقع.
+
+## الحدود الحالية
+
+هذه المرحلة لا تحتوي على CircuitJS أو SPICE أو Matter.js أو نموذج L298N أو مكثفات أو فيزياء محركات. لا تزال هذه العناصر مراحل لاحقة. كذلك فإن الموقع الثابت لا يستطيع التجميع وحده دون خدمة `compiler-service` خارجية تشغل Arduino CLI.
+
+## التشغيل المحلي لخدمة التجميع
+
+```bash
+cd compiler-service
+node server.mjs
+```
+
+أو:
+
+```bash
+docker build -t balancebot-compiler .
+docker run --rm -p 8787:8787 balancebot-compiler
+```
